@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 # language_converters.register('subdivx = subliminal.converters.subdivx:SubdivxConverter')
 
 MY_SUBTITLE_EXTENSIONS = ('.srt', '.sub', '.ssa', '.ass')
-MAIN_SUBDIVX_URL = "http://www.subdivx.com/"
+MAIN_SUBDIVX_URL = "https://www.subdivx.com/"
 SEARCH_PAGE_URL = MAIN_SUBDIVX_URL + \
     "index.php?accion=5&masdesc=&oxdown=1&pg=%(page)s&buscar=%(query)s"
 PAGE_ENCODING = 'latin1'
