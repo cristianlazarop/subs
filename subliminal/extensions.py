@@ -20,6 +20,7 @@ class RegistrableExtensionManager(ExtensionManager):
     :param \*\*kwargs: additional parameters for the :class:~stevedore.extensions.ExtensionManager` constructor.
 
     """
+
     def __init__(self, namespace, internal_extensions, **kwargs):
         #: Registered extensions with entry point syntax
         self.registered_extensions = []
@@ -95,6 +96,7 @@ provider_manager = RegistrableExtensionManager('subliminal.providers', [
     'opensubtitlesvip = subliminal.providers.opensubtitles:OpenSubtitlesVipProvider',
     'podnapisi = subliminal.providers.podnapisi:PodnapisiProvider',
     'shooter = subliminal.providers.shooter:ShooterProvider',
+    'subdivx = subliminal.providers.subdivx:SubdivxProvider',
     'thesubdb = subliminal.providers.thesubdb:TheSubDBProvider',
     'tvsubtitles = subliminal.providers.tvsubtitles:TVsubtitlesProvider'
 ])
@@ -103,7 +105,8 @@ provider_manager = RegistrableExtensionManager('subliminal.providers', [
 disabled_providers = ['opensubtitlesvip']
 
 #: Default enabled providers
-default_providers = [p for p in provider_manager.names() if p not in disabled_providers]
+default_providers = [
+    p for p in provider_manager.names() if p not in disabled_providers]
 
 #: Refiner manager
 refiner_manager = RegistrableExtensionManager('subliminal.refiners', [

@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 class MutexLock(AbstractFileLock):
     """:class:`MutexLock` is a thread-based rw lock based on :class:`dogpile.core.ReadWriteMutex`."""
+
     def __init__(self, filename):
         self.mutex = ReadWriteMutex()
 
@@ -54,6 +55,7 @@ class Config(object):
     :param str path: path to the configuration file.
 
     """
+
     def __init__(self, path):
         #: Path to the configuration file
         self.path = path
@@ -62,11 +64,14 @@ class Config(object):
         self.config = configparser.SafeConfigParser()
         self.config.add_section('general')
         self.config.set('general', 'languages', json.dumps(['en']))
-        self.config.set('general', 'providers', json.dumps(sorted([p.name for p in provider_manager])))
-        self.config.set('general', 'refiners', json.dumps(sorted([r.name for r in refiner_manager])))
+        self.config.set('general', 'providers', json.dumps(
+            sorted([p.name for p in provider_manager])))
+        self.config.set('general', 'refiners', json.dumps(
+            sorted([r.name for r in refiner_manager])))
         self.config.set('general', 'single', str(0))
         self.config.set('general', 'embedded_subtitles', str(1))
-        self.config.set('general', 'age', str(int(timedelta(weeks=2).total_seconds())))
+        self.config.set('general', 'age', str(
+            int(timedelta(weeks=2).total_seconds())))
         self.config.set('general', 'hearing_impaired', str(1))
         self.config.set('general', 'min_score', str(0))
 
@@ -85,7 +90,8 @@ class Config(object):
 
     @languages.setter
     def languages(self, value):
-        self.config.set('general', 'languages', json.dumps(sorted([str(l) for l in value])))
+        self.config.set('general', 'languages', json.dumps(
+            sorted([str(l) for l in value])))
 
     @property
     def providers(self):
@@ -93,7 +99,8 @@ class Config(object):
 
     @providers.setter
     def providers(self, value):
-        self.config.set('general', 'providers', json.dumps(sorted([p.lower() for p in value])))
+        self.config.set('general', 'providers', json.dumps(
+            sorted([p.lower() for p in value])))
 
     @property
     def refiners(self):
@@ -101,7 +108,8 @@ class Config(object):
 
     @refiners.setter
     def refiners(self, value):
-        self.config.set('general', 'refiners', json.dumps([r.lower() for r in value]))
+        self.config.set('general', 'refiners',
+                        json.dumps([r.lower() for r in value]))
 
     @property
     def single(self):
@@ -148,7 +156,8 @@ class Config(object):
         rv = {}
         for provider in provider_manager:
             if self.config.has_section(provider.name):
-                rv[provider.name] = {k: v for k, v in self.config.items(provider.name)}
+                rv[provider.name] = {k: v for k,
+                                     v in self.config.items(provider.name)}
         return rv
 
     @provider_configs.setter
@@ -168,7 +177,8 @@ class Config(object):
         rv = {}
         for refiner in refiner_manager:
             if self.config.has_section(refiner.name):
-                rv[refiner.name] = {k: v for k, v in self.config.items(refiner.name)}
+                rv[refiner.name] = {k: v for k,
+                                    v in self.config.items(refiner.name)}
         return rv
 
     @refiner_configs.setter
@@ -217,7 +227,8 @@ class AgeParamType(click.ParamType):
     name = 'age'
 
     def convert(self, value, param, ctx):
-        match = re.match(r'^(?:(?P<weeks>\d+?)w)?(?:(?P<days>\d+?)d)?(?:(?P<hours>\d+?)h)?$', value)
+        match = re.match(
+            r'^(?:(?P<weeks>\d+?)w)?(?:(?P<days>\d+?)d)?(?:(?P<hours>\d+?)h)?$', value)
         if not match:
             self.fail('%s is not a valid age' % value)
 
@@ -241,13 +252,14 @@ config_file = 'config.ini'
 @click.option('--legendastv', type=click.STRING, nargs=2, metavar='USERNAME PASSWORD', help='LegendasTV configuration.')
 @click.option('--opensubtitles', type=click.STRING, nargs=2, metavar='USERNAME PASSWORD',
               help='OpenSubtitles configuration.')
+@click.option('--subdivx', type=click.STRING, nargs=2, metavar='USERNAME PASSWORD', help='subdivx configuration.')
 @click.option('--omdb', type=click.STRING, nargs=1, metavar='APIKEY', help='OMDB API key.')
 @click.option('--cache-dir', type=click.Path(writable=True, file_okay=False), default=dirs.user_cache_dir,
               show_default=True, expose_value=True, help='Path to the cache directory.')
 @click.option('--debug', is_flag=True, help='Print useful information for debugging subliminal and for reporting bugs.')
 @click.version_option(__version__)
 @click.pass_context
-def subliminal(ctx, addic7ed, legendastv, opensubtitles, omdb, cache_dir, debug):
+def subliminal(ctx, addic7ed, legendastv, opensubtitles, subdivx, omdb, cache_dir, debug):
     """Subtitles, faster than your thoughts."""
     # create cache directory
     try:
@@ -274,12 +286,19 @@ def subliminal(ctx, addic7ed, legendastv, opensubtitles, omdb, cache_dir, debug)
 
     # provider configs
     if addic7ed:
-        ctx.obj['provider_configs']['addic7ed'] = {'username': addic7ed[0], 'password': addic7ed[1]}
+        ctx.obj['provider_configs']['addic7ed'] = {
+            'username': addic7ed[0], 'password': addic7ed[1]}
     if legendastv:
-        ctx.obj['provider_configs']['legendastv'] = {'username': legendastv[0], 'password': legendastv[1]}
+        ctx.obj['provider_configs']['legendastv'] = {
+            'username': legendastv[0], 'password': legendastv[1]}
     if opensubtitles:
-        ctx.obj['provider_configs']['opensubtitles'] = {'username': opensubtitles[0], 'password': opensubtitles[1]}
-        ctx.obj['provider_configs']['opensubtitlesvip'] = {'username': opensubtitles[0], 'password': opensubtitles[1]}
+        ctx.obj['provider_configs']['opensubtitles'] = {
+            'username': opensubtitles[0], 'password': opensubtitles[1]}
+        ctx.obj['provider_configs']['opensubtitlesvip'] = {
+            'username': opensubtitles[0], 'password': opensubtitles[1]}
+    if subdivx:
+        ctx.obj['provider_configs']['subdivx'] = {
+            'username': subdivx[0], 'password': subdivx[1]}
 
     # refiner configs
     if omdb:
@@ -348,11 +367,13 @@ def download(obj, provider, refiner, language, age, directory, encoding, single,
                 try:
                     video = Video.fromname(p)
                 except:
-                    logger.exception('Unexpected error while collecting non-existing path %s', p)
+                    logger.exception(
+                        'Unexpected error while collecting non-existing path %s', p)
                     errored_paths.append(p)
                     continue
                 if not force:
-                    video.subtitle_languages |= set(search_external_subtitles(video.name, directory=directory).values())
+                    video.subtitle_languages |= set(search_external_subtitles(
+                        video.name, directory=directory).values())
 
                 if check_video(video, languages=language, age=age, undefined=single):
                     refine(video, episode_refiners=refiner, movie_refiners=refiner,
@@ -366,7 +387,8 @@ def download(obj, provider, refiner, language, age, directory, encoding, single,
                 try:
                     scanned_videos = scan_videos(p, age=age, archives=archives)
                 except:
-                    logger.exception('Unexpected error while collecting directory path %s', p)
+                    logger.exception(
+                        'Unexpected error while collecting directory path %s', p)
                     errored_paths.append(p)
                     continue
                 for video in scanned_videos:
@@ -386,11 +408,13 @@ def download(obj, provider, refiner, language, age, directory, encoding, single,
             try:
                 video = scan_video(p)
             except:
-                logger.exception('Unexpected error while collecting path %s', p)
+                logger.exception(
+                    'Unexpected error while collecting path %s', p)
                 errored_paths.append(p)
                 continue
             if not force:
-                video.subtitle_languages |= set(search_external_subtitles(video.name, directory=directory).values())
+                video.subtitle_languages |= set(search_external_subtitles(
+                    video.name, directory=directory).values())
             if check_video(video, languages=language, age=age, undefined=single):
                 refine(video, episode_refiners=refiner, movie_refiners=refiner,
                        refiner_configs=obj['refiner_configs'], embedded_subtitles=not force,
@@ -416,11 +440,14 @@ def download(obj, provider, refiner, language, age, directory, encoding, single,
 
     # report collected videos
     click.echo('%s video%s collected / %s video%s ignored / %s error%s' % (
-        click.style(str(len(videos)), bold=True, fg='green' if videos else None),
+        click.style(str(len(videos)), bold=True,
+                    fg='green' if videos else None),
         's' if len(videos) > 1 else '',
-        click.style(str(len(ignored_videos)), bold=True, fg='yellow' if ignored_videos else None),
+        click.style(str(len(ignored_videos)), bold=True,
+                    fg='yellow' if ignored_videos else None),
         's' if len(ignored_videos) > 1 else '',
-        click.style(str(len(errored_paths)), bold=True, fg='red' if errored_paths else None),
+        click.style(str(len(errored_paths)), bold=True,
+                    fg='red' if errored_paths else None),
         's' if len(errored_paths) > 1 else '',
     ))
 
@@ -436,7 +463,8 @@ def download(obj, provider, refiner, language, age, directory, encoding, single,
             for v in bar:
                 scores = get_scores(v)
                 subtitles = p.download_best_subtitles(p.list_subtitles(v, language - v.subtitle_languages),
-                                                      v, language, min_score=scores['hash'] * min_score / 100,
+                                                      v, language, min_score=scores['hash'] *
+                                                      min_score / 100,
                                                       hearing_impaired=hearing_impaired, only_one=single)
                 downloaded_subtitles[v] = subtitles
 
@@ -447,12 +475,14 @@ def download(obj, provider, refiner, language, age, directory, encoding, single,
     # save subtitles
     total_subtitles = 0
     for v, subtitles in downloaded_subtitles.items():
-        saved_subtitles = save_subtitles(v, subtitles, single=single, directory=directory, encoding=encoding)
+        saved_subtitles = save_subtitles(
+            v, subtitles, single=single, directory=directory, encoding=encoding)
         total_subtitles += len(saved_subtitles)
 
         if verbose > 0:
             click.echo('%s subtitle%s downloaded for %s' % (click.style(str(len(saved_subtitles)), bold=True),
-                                                            's' if len(saved_subtitles) > 1 else '',
+                                                            's' if len(
+                                                                saved_subtitles) > 1 else '',
                                                             os.path.split(v.name)[1]))
 
         if verbose > 1:
@@ -486,11 +516,13 @@ def download(obj, provider, refiner, language, age, directory, encoding, single,
 
                 # echo some nice colored output
                 click.echo('  - [{score}] {language} subtitle from {provider_name} (match on {matches})'.format(
-                    score=click.style('{:5.1f}'.format(scaled_score), fg=score_color, bold=score >= scores['hash']),
+                    score=click.style('{:5.1f}'.format(
+                        scaled_score), fg=score_color, bold=score >= scores['hash']),
                     language=s.language.name if s.language.country is None else '%s (%s)' % (s.language.name,
                                                                                              s.language.country.name),
                     provider_name=s.provider_name,
-                    matches=', '.join(sorted(matches, key=scores.get, reverse=True))
+                    matches=', '.join(
+                        sorted(matches, key=scores.get, reverse=True))
                 ))
 
     if verbose == 0:

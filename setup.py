@@ -18,14 +18,16 @@ def read(*parts):
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r'^__version__ = [\'"]([^\'"]*)[\'"]', version_file, re.M)
+    version_match = re.search(
+        r'^__version__ = [\'"]([^\'"]*)[\'"]', version_file, re.M)
     if version_match:
         return version_match.group(1)
     raise RuntimeError('Unable to find version string.')
 
 
 # requirements
-setup_requirements = ['pytest-runner'] if {'pytest', 'test', 'ptr'}.intersection(sys.argv) else []
+setup_requirements = [
+    'pytest-runner'] if {'pytest', 'test', 'ptr'}.intersection(sys.argv) else []
 
 install_requirements = ['guessit>=3.0.0', 'babelfish>=0.5.2', 'enzyme>=0.4.1', 'beautifulsoup4>=4.4.0',
                         'requests>=2.0', 'click>=4.0', 'dogpile.cache>=0.6.0', 'stevedore>=1.20.0',
@@ -34,11 +36,13 @@ install_requirements = ['guessit>=3.0.0', 'babelfish>=0.5.2', 'enzyme>=0.4.1', '
 if sys.version_info < (3, 2):
     install_requirements.append('futures>=3.0')
 
-test_requirements = ['sympy', 'vcrpy>=1.6.1', 'pytest', 'pytest-pep8', 'pytest-flakes', 'pytest-cov']
+test_requirements = ['sympy', 'vcrpy>=1.6.1', 'pytest',
+                     'pytest-pep8', 'pytest-flakes', 'pytest-cov']
 if sys.version_info < (3, 3):
     test_requirements.append('mock')
 
-dev_requirements = ['tox', 'sphinx', 'sphinx_rtd_theme', 'sphinxcontrib-programoutput', 'wheel']
+dev_requirements = ['tox', 'sphinx', 'sphinx_rtd_theme',
+                    'sphinxcontrib-programoutput', 'wheel']
 
 
 setup(name='subliminal',
@@ -75,6 +79,7 @@ setup(name='subliminal',
               'opensubtitles = subliminal.providers.opensubtitles:OpenSubtitlesProvider',
               'podnapisi = subliminal.providers.podnapisi:PodnapisiProvider',
               'shooter = subliminal.providers.shooter:ShooterProvider',
+              'subdivx = subliminal.providers.subdivx:SubdivxProvider',
               'thesubdb = subliminal.providers.thesubdb:TheSubDBProvider',
               'tvsubtitles = subliminal.providers.tvsubtitles:TVsubtitlesProvider'
           ],

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 __title__ = 'subliminal'
-__version__ = '2.1.0'
+__version__ = '2.1.1'
 __short_version__ = '.'.join(__version__.split('.')[:2])
-__author__ = 'Antoine Bertin'
+__author__ = 'Cristian Lazaro'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2016, Antoine Bertin'
+__copyright__ = 'Copyright 2016, Cristian Lazaro'
 
 import logging
 
